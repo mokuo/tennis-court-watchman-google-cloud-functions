@@ -1,0 +1,19 @@
+{
+  "name": "tennis-court-watchman",
+  "version": "1.0.0",
+  "description": "Serverless application to notify Slack of unreserved tennis court.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/mokuo/tennis-court-watchman.git"
+  },
+  "author": "mokuo",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mokuo/tennis-court-watchman/issues"
+  },
+  "homepage": "https://github.com/mokuo/tennis-court-watchman#readme"
+}
