@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+const { WebClient } = require('@slack/client');
 
 exports.watchShinjuku = async (req, res) => {
   let navigationPromise;
@@ -42,7 +43,7 @@ exports.watchShinjuku = async (req, res) => {
 
   const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
     const thElements = Array.from(tableElement.querySelectorAll('thead tr th')).slice(1);
-    const timeArray = thElements.map(el => el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, ''));
+    const times = thElements.map(el => el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, ''));
     const obj = {};
 
     tableElement.querySelectorAll('tbody').forEach((tbodyElement) => {
@@ -53,7 +54,7 @@ exports.watchShinjuku = async (req, res) => {
         const imgElement = tdElement.querySelector('img');
         const OX = imgElement.getAttribute('title');
         if (OX === 'O') {
-          availableTimeList.push(timeArray[index]);
+          availableTimeList.push(times[index]);
         }
       });
 
@@ -63,7 +64,21 @@ exports.watchShinjuku = async (req, res) => {
     return obj;
   });
 
-  console.log(availableDateTimeObj);
-
   await browser.close();
+
+  let info = '';
+  Object.keys(availableDateTimeObj).forEach((key) => {
+    const times = availableDateTimeObj[key];
+    if (times.length === 0) { return; }
+
+    info += `${key}\n`;
+    times.forEach((time) => {
+      info += `  - ${time}\n`;
+    });
+  });
+  const text = `西落合公園\n\`\`\`\n${info}\`\`\``;
+
+  const token = process.env.SLACK_TOKEN;
+  const web = new WebClient(token);
+  web.chat.postMessage({ channel: 'CD1M8BUM7', text });
 };
