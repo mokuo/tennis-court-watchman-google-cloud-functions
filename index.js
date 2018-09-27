@@ -45,7 +45,7 @@ exports.watchShinjuku = async (req, res) => {
     const obj = {};
 
     tableElement.querySelectorAll('tbody').forEach((tbodyElement) => {
-      const date = tbodyElement.querySelector('th').textContent;
+      const date = tbodyElement.querySelector('th').textContent.trim();
       const availableTimeList = [];
 
       tbodyElement.querySelectorAll('td').forEach((tdElement, index) => {
