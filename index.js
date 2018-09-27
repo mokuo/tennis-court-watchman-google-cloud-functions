@@ -23,12 +23,13 @@ exports.watchShinjuku = async (req, res) => {
   await page.click('#inner-contents tbody td.left a[title="西落合公園"]');
   await navigationPromise;
 
-  const selectorPromise = page.waitForSelector('#inner-contents ul.double-text-buttons a[title="テニス"]');
+  const tennisSelector = '#inner-contents ul.double-text-buttons a[title="テニス"]';
+  const selectorPromise = page.waitForSelector(tennisSelector);
   await page.$eval('#inner-contents ul.double-text-buttons2 a[title="西落合公園庭球場"]', el => el.click());
   await selectorPromise;
 
   navigationPromise = page.waitForNavigation();
-  await page.click('#inner-contents ul.double-text-buttons a[title="テニス"]');
+  await page.click(tennisSelector);
   await navigationPromise;
 
   navigationPromise = page.waitForNavigation();
