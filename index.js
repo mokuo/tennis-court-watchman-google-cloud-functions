@@ -48,8 +48,9 @@ exports.watchShinjuku = async (req, res) => {
 
     tableElement.querySelectorAll('tbody').forEach((tbodyElement) => {
       const date = tbodyElement.querySelector('th').textContent.trim();
-      const availableTimeList = [];
+      if (/[月火水木金]/.test(date)) { return; }
 
+      const availableTimeList = [];
       tbodyElement.querySelectorAll('td').forEach((tdElement, index) => {
         const imgElement = tdElement.querySelector('img');
         const OX = imgElement.getAttribute('title');
