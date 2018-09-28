@@ -17,7 +17,7 @@ const evalClickAndWait = async (page, selector, nextSelector) => {
 };
 
 exports.watchShinjuku = async (req, res) => {
-  const browser = await puppeteer.launch({ defaultViewport: { width: 800, height: 1000 } });
+  const browser = await puppeteer.launch();
   const page = await browser.newPage();
   await page.goto('https://yoyaku.cultos-y.jp/regasu-shinjuku/reserve/gin_menu');
 
