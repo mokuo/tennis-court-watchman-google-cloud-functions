@@ -77,7 +77,7 @@ exports.watchShinjuku = async (req, res) => {
       info += `  - ${time}\n`;
     });
   });
-  const text = `西落合公園\n\`\`\`\n${info}\`\`\``;
+  const text = (info === '') ? '西落合中央公園 : no available time.' : `西落合公園\n\`\`\`\n${info}\`\`\``;
 
   const token = process.env.SLACK_TOKEN;
   const web = new WebClient(token);
