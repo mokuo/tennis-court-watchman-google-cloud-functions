@@ -82,7 +82,7 @@ const watchPark = async (browser, parkName) => {
   await clickAndWait(page, '#inner-contents a[title="屋外スポーツ施設"]');
   await clickAndWait(page, `#inner-contents tbody td.left a[title="${parkName}"]`);
   const tennisSelector = '#inner-contents ul.double-text-buttons a[title="テニス"]';
-  await evalClickAndWait(page, `#inner-contents ul.double-text-buttons2 a[title="${parkName}庭球場"]`, tennisSelector);
+  await evalClickAndWait(page, `#inner-contents ul.double-text-buttons2 a[title^="${parkName}庭球場"]`, tennisSelector);
   await clickAndWait(page, tennisSelector);
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK');
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a');
@@ -93,6 +93,7 @@ const watchPark = async (browser, parkName) => {
 
 exports.watchShinjuku = async (req, res) => {
   const PARK_NAMES = [
+    '甘泉園公園',
     '落合中央公園',
     '西落合公園',
   ];
