@@ -75,6 +75,8 @@ exports.watchShinjuku = async (req, res) => {
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK');
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a');
   await notifyInfo(page, PARK_NAME);
+  await clickAndWait(page, '#timetable .top-nav input[title="次月"]');
+  await notifyInfo(page, PARK_NAME);
 
   await browser.close();
 };
