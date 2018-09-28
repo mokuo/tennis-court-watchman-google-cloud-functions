@@ -16,7 +16,7 @@ const evalClickAndWait = async (page, selector, nextSelector) => {
   ]);
 };
 
-const notifyInfomation = async (page, parkName) => {
+const buildAvailableDateTimeObj = async (page) => {
   const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
     const thElements = Array.from(tableElement.querySelectorAll('thead tr th')).slice(1);
     const times = thElements.map(el => el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, ''));
@@ -41,7 +41,12 @@ const notifyInfomation = async (page, parkName) => {
     return obj;
   });
 
+  return availableDateTimeObj;
+};
+
+const buildInformation = (availableDateTimeObj) => {
   let info = '';
+
   Object.keys(availableDateTimeObj).forEach((key) => {
     const times = availableDateTimeObj[key];
     if (times.length === 0) { return; }
@@ -51,11 +56,21 @@ const notifyInfomation = async (page, parkName) => {
       info += `  - ${time}\n`;
     });
   });
-  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``;
 
+  return info;
+};
+
+const notifyInfomation = (info, parkName) => {
+  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``;
   const token = process.env.SLACK_TOKEN;
   const web = new WebClient(token);
   web.chat.postMessage({ channel: 'CD1M8BUM7', text });
+};
+
+const perform = async (page, parkName) => {
+  const availableDateTimeObj = await buildAvailableDateTimeObj(page);
+  const info = buildInformation(availableDateTimeObj);
+  notifyInfomation(info, parkName);
 };
 
 exports.watchShinjuku = async (req, res) => {
@@ -74,9 +89,9 @@ exports.watchShinjuku = async (req, res) => {
   await clickAndWait(page, tennisSelector);
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK');
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a');
-  await notifyInfomation(page, PARK_NAME);
+  await perform(page, PARK_NAME);
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]');
-  await notifyInfomation(page, PARK_NAME);
+  await perform(page, PARK_NAME);
 
   await browser.close();
 };
