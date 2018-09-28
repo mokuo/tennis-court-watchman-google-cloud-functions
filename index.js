@@ -16,7 +16,7 @@ const evalClickAndWait = async (page, selector, nextSelector) => {
   ]);
 };
 
-const notifyInfo = async (page, parkName) => {
+const notifyInfomation = async (page, parkName) => {
   const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
     const thElements = Array.from(tableElement.querySelectorAll('thead tr th')).slice(1);
     const times = thElements.map(el => el.textContent.replace(/(\n|\t|<br>|<span>|<\/span>)/g, ''));
@@ -74,9 +74,9 @@ exports.watchShinjuku = async (req, res) => {
   await clickAndWait(page, tennisSelector);
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK');
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a');
-  await notifyInfo(page, PARK_NAME);
+  await notifyInfomation(page, PARK_NAME);
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]');
-  await notifyInfo(page, PARK_NAME);
+  await notifyInfomation(page, PARK_NAME);
 
   await browser.close();
 };
