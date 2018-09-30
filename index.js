@@ -44,7 +44,7 @@ const buildAvailableDateTimeObj = async (page) => {
   return availableDateTimeObj;
 };
 
-const buildInformation = (availableDateTimeObj) => {
+const buildInfo = (availableDateTimeObj) => {
   let info = '';
 
   Object.keys(availableDateTimeObj).forEach((key) => {
@@ -60,17 +60,17 @@ const buildInformation = (availableDateTimeObj) => {
   return info;
 };
 
-const notifyInfomation = (info, parkName) => {
+const postInfo = (info, parkName) => {
   const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``;
   const token = process.env.SLACK_TOKEN;
   const web = new WebClient(token);
   web.chat.postMessage({ channel: 'CD1M8BUM7', text });
 };
 
-const perform = async (page, parkName) => {
+const collectAndPost = async (page, parkName) => {
   const availableDateTimeObj = await buildAvailableDateTimeObj(page);
-  const info = buildInformation(availableDateTimeObj);
-  notifyInfomation(info, parkName);
+  const info = buildInfo(availableDateTimeObj);
+  postInfo(info, parkName);
 };
 
 const watchPark = async (browser, parkName) => {
@@ -86,9 +86,9 @@ const watchPark = async (browser, parkName) => {
   await clickAndWait(page, tennisSelector);
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK');
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a');
-  await perform(page, parkName);
+  await collectAndPost(page, parkName);
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]');
-  await perform(page, parkName);
+  await collectAndPost(page, parkName);
 };
 
 exports.watchShinjuku = async (req, res) => {
