@@ -92,15 +92,27 @@ const watchPark = async (browser, parkName) => {
 };
 
 exports.watchShinjuku = async (req, res) => {
-  const PARK_NAMES = [
-    '甘泉園公園',
-    '落合中央公園',
-    '西落合公園',
-  ];
+  try {
+    const PARK_NAMES = [
+      '甘泉園公園',
+      '落合中央公園',
+      '西落合公園',
+    ];
 
-  const browser = await puppeteer.launch();
-  await Promise.all(PARK_NAMES.map(async (parkName) => {
-    await watchPark(browser, parkName);
-  }));
-  await browser.close();
+    const browser = await puppeteer.launch();
+    await Promise.all(PARK_NAMES.map(async (parkName) => {
+      await watchPark(browser, parkName);
+    }));
+    await browser.close();
+
+    res.send('Success!');
+  } catch (err) {
+    if (err instanceof Error) {
+      console.error(err); // eslint-disable-line no-console
+      res.send(`${err.name} : ${err.message}`);
+    } else {
+      console.error(new Error(err)); // eslint-disable-line no-console
+      res.send(err);
+    }
+  }
 };
