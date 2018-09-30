@@ -89,6 +89,7 @@ const watchPark = async (browser, parkName) => {
   await collectAndPost(page, parkName);
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]');
   await collectAndPost(page, parkName);
+  await context.close();
 };
 
 exports.watchShinjuku = async (req, res) => {
