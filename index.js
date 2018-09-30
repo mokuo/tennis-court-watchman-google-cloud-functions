@@ -99,7 +99,10 @@ exports.watchShinjuku = async (req, res) => {
       '西落合公園',
     ];
 
-    const browser = await puppeteer.launch();
+    const options = {};
+    // run without the sandbox if running on GCP
+    if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox']; }
+    const browser = await puppeteer.launch(options);
     await Promise.all(PARK_NAMES.map(async (parkName) => {
       await watchPark(browser, parkName);
     }));
