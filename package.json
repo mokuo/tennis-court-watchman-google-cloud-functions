@@ -4,7 +4,7 @@
   "description": "Serverless application to notify Slack of unreserved tennis court.",
   "main": "index.js",
   "scripts": {
-    "test": "ava"
+    "test": "ava test"
   },
   "repository": {
     "type": "git",

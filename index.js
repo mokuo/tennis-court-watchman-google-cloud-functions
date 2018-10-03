@@ -2,10 +2,11 @@ const puppeteer = require('puppeteer');
 const { WebClient } = require('@slack/client');
 
 const clickAndWait = async (page, selector) => {
-  await Promise.all([
+  const promises = await Promise.all([
     page.waitForNavigation(),
     page.click(selector),
   ]);
+  return promises;
 };
 
 const evalClickAndWait = async (page, selector, nextSelector) => {
@@ -92,7 +93,7 @@ const watchPark = async (browser, parkName) => {
   await context.close();
 };
 
-exports.watchShinjuku = async (req, res) => {
+const watchShinjuku = async (req, res) => {
   try {
     const PARK_NAMES = [
       '甘泉園公園',
@@ -120,3 +121,7 @@ exports.watchShinjuku = async (req, res) => {
     }
   }
 };
+
+exports.clickAndWait = clickAndWait;
+exports.evalClickAndWait = evalClickAndWait;
+exports.watchShinjuku = watchShinjuku;
