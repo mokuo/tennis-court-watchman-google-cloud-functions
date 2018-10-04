@@ -92,7 +92,7 @@ const watchPark = async (browser, parkName) => {
   await context.close();
 };
 
-exports.watchShinjuku = async (req, res) => {
+const watchShinjuku = async (req, res) => {
   try {
     const PARK_NAMES = [
       '甘泉園公園',
@@ -120,3 +120,6 @@ exports.watchShinjuku = async (req, res) => {
     }
   }
 };
+
+module.exports.buildInfo = buildInfo;
+module.exports.watchShinjuku = watchShinjuku;
