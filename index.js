@@ -24,7 +24,7 @@ const buildAvailableDateTimeObj = async (page) => {
 
     tableElement.querySelectorAll('tbody').forEach((tbodyElement) => {
       const date = tbodyElement.querySelector('th').textContent.trim();
-      if (/[月火水木金]/.test(date)) { return; }
+      // if (/[月火水木金]/.test(date)) { return; }
 
       const availableTimeList = [];
       tbodyElement.querySelectorAll('td').forEach((tdElement, index) => {
@@ -69,6 +69,7 @@ const postInfo = (info, parkName) => {
 
 const collectAndPost = async (page, parkName) => {
   const availableDateTimeObj = await buildAvailableDateTimeObj(page);
+  console.log(availableDateTimeObj);
   const info = buildInfo(availableDateTimeObj);
   postInfo(info, parkName);
 };
@@ -92,7 +93,7 @@ const watchPark = async (browser, parkName) => {
   await context.close();
 };
 
-exports.watchShinjuku = async (req, res) => {
+const watchShinjuku = async (req, res) => {
   try {
     const PARK_NAMES = [
       '甘泉園公園',
@@ -120,3 +121,6 @@ exports.watchShinjuku = async (req, res) => {
     }
   }
 };
+
+module.exports.clickAndWait = clickAndWait;
+module.exports.watchShinjuku = watchShinjuku;
