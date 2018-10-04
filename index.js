@@ -60,8 +60,7 @@ const buildInfo = (availableDateTimeObj) => {
   return info;
 };
 
-const postInfo = (info, parkName) => {
-  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``;
+const postMsg = (text) => {
   const token = process.env.SLACK_TOKEN;
   const web = new WebClient(token);
   web.chat.postMessage({ channel: 'CD1M8BUM7', text });
@@ -70,7 +69,8 @@ const postInfo = (info, parkName) => {
 const collectAndPost = async (page, parkName) => {
   const availableDateTimeObj = await buildAvailableDateTimeObj(page);
   const info = buildInfo(availableDateTimeObj);
-  postInfo(info, parkName);
+  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``;
+  postMsg(text);
 };
 
 const watchPark = async (browser, parkName) => {
@@ -122,4 +122,5 @@ const watchShinjuku = async (req, res) => {
 };
 
 module.exports.buildInfo = buildInfo;
+module.exports.postMsg = postMsg;
 module.exports.watchShinjuku = watchShinjuku;

@@ -1,4 +1,7 @@
+const { WebClient } = require('@slack/client');
 const index = require('../index');
+
+jest.mock('@slack/client');
 
 describe('buildInfo()', () => {
   test('build infomation to post', () => {
@@ -28,5 +31,21 @@ describe('buildInfo()', () => {
     const subject = index.buildInfo(availableDateTimeObj);
 
     expect(subject).toBe(expectInfo);
+  });
+});
+
+describe('postMsg()', () => {
+  const mockPostMessage = jest.fn();
+
+  beforeEach(() => {
+    WebClient.mockImplementation(() => (
+      { chat: { postMessage: mockPostMessage } }
+    ));
+    index.postMsg('text');
+  });
+
+  test('post message to slack', () => {
+    expect(WebClient).toHaveBeenCalledWith(process.env.SLACK_TOKEN);
+    expect(mockPostMessage).toHaveBeenCalledWith({ channel: 'CD1M8BUM7', text: 'text' });
   });
 });
