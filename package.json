@@ -21,7 +21,8 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-jest": "^21.24.1",
-    "jest": "^23.6.0"
+    "jest": "^23.6.0",
+    "jest-puppeteer": "^3.4.0"
   },
   "dependencies": {
     "@slack/client": "^4.6.0",
