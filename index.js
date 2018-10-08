@@ -121,6 +121,7 @@ const watchShinjuku = async (req, res) => {
   }
 };
 
+module.exports.buildAvailableDateTimeObj = buildAvailableDateTimeObj;
 module.exports.buildInfo = buildInfo;
 module.exports.postMsg = postMsg;
 module.exports.watchShinjuku = watchShinjuku;

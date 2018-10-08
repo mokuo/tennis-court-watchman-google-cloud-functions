@@ -16,6 +16,9 @@
     "url": "https://github.com/mokuo/tennis-court-watchman/issues"
   },
   "homepage": "https://github.com/mokuo/tennis-court-watchman",
+  "jest": {
+    "preset": "jest-puppeteer"
+  },
   "devDependencies": {
     "eslint": "^5.6.0",
     "eslint-config-airbnb-base": "^13.1.0",
