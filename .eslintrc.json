@@ -8,5 +8,8 @@
       "page": true,
       "browser": true,
       "context": true
+    },
+    "rules": {
+      "semi": [2, "never"]
     }
 }
