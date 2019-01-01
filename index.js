@@ -1,20 +1,7 @@
 const puppeteer = require('puppeteer');
 const { WebClient } = require('@slack/client');
-
-const clickAndWait = async (page, selector) => {
-  await Promise.all([
-    page.waitForNavigation(),
-    page.click(selector),
-  ]);
-};
-
-const evalClickAndWait = async (page, selector, nextSelector) => {
-  await Promise.all([
-    page.waitForNavigation(),
-    page.$eval(selector, el => el.click()),
-    page.waitForSelector(nextSelector),
-  ]);
-};
+const clickAndWait = require('./utils/click');
+const evalClickAndWait = require('./utils/click');
 
 const buildAvailableDateTimeObj = async (page) => {
   const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
