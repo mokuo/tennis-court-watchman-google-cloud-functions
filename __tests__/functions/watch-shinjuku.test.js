@@ -1,12 +1,13 @@
-const index = require('../index')
+const appRoot = require('app-root-path')
+const { buildAvailableDateTimeObj } = require('../../functions/watch-shinjuku')
 
 describe('buildAvailableDateTimeObj()', () => {
   beforeEach(async () => {
-    await page.goto(`file://${__dirname}/../__pages__/schedule.html`)
+    await page.goto(`file://${appRoot}/__pages__/schedule.html`)
   })
 
   it('build availabble datetime object', async () => {
-    const subject = await index.buildAvailableDateTimeObj(page)
+    const subject = await buildAvailableDateTimeObj(page)
     const expectObj = {
       '10/13(土)': [],
       '10/14(日)': [],

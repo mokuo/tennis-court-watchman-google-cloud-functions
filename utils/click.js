@@ -13,5 +13,5 @@ const evalClickAndWait = async (page, selector, nextSelector) => {
   ])
 }
 
-module.exports = clickAndWait
-module.exports = evalClickAndWait
+module.exports.clickAndWait = clickAndWait
+module.exports.evalClickAndWait = evalClickAndWait
