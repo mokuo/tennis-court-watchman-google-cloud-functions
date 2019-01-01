@@ -32,7 +32,7 @@ gcloud pubsub topics describe watch-tennis-court # 確認
 FUNCTION=watchShinjuku yarn deploy
 ```
 
-### テスト
+### pubsub 連携のテスト
 
 ```bash
 gcloud pubsub topics publish watch-tennis-court --message "test"

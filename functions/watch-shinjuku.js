@@ -1,6 +1,7 @@
+const puppeteer = require('puppeteer')
 const { clickAndWait, evalClickAndWait } = require('../utils/click')
 const buildInfo = require('../utils/build-info')
-const watch = require('../utils/watch')
+const postMsg = require('../utils/post-msg')
 
 const PARK_NAMES = [
   '甘泉園公園',
@@ -70,9 +71,31 @@ const getParkInfo = async (browser, parkName) => {
   return info
 }
 
+const watch = async () => {
+  const options = {}
+  // run without the sandbox if running on GCP
+  if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox'] }
+  const browser = await puppeteer.launch(options)
+  let text = '`新宿区`\n'
+  await Promise.all(PARK_NAMES.map(async (parkName) => {
+    const info = await getParkInfo(browser, parkName)
+    if (info === '') {
+      text += `${parkName}: 空いているテニスコートはありません\n`
+    } else {
+      text += `${parkName}:\n`
+      text += '```\n'
+      text += `${info}`
+      text += '```\n'
+    }
+  }))
+  await browser.close()
+
+  await postMsg(text)
+}
+
 const watchShinjuku = async () => {
   try {
-    await watch('新宿区', PARK_NAMES, getParkInfo)
+    await watch()
   } catch (err) {
     if (err instanceof Error) {
       console.error(err) // eslint-disable-line no-console
@@ -82,5 +105,7 @@ const watchShinjuku = async () => {
   }
 }
 
+module.exports.getParkInfo = getParkInfo
 module.exports.buildAvailableDateTimeObj = buildAvailableDateTimeObj
+module.exports.watch = watch
 module.exports.watchShinjuku = watchShinjuku
