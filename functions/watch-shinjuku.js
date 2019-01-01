@@ -1,7 +1,12 @@
-const puppeteer = require('puppeteer')
 const { clickAndWait, evalClickAndWait } = require('../utils/click')
-const postMsg = require('../utils/post-msg')
 const buildInfo = require('../utils/build-info')
+const watch = require('../utils/watch')
+
+const PARK_NAMES = [
+  '甘泉園公園',
+  '落合中央公園',
+  '西落合公園',
+]
 
 const buildAvailableDateTimeObj = async (page) => {
   const availableDateTimeObj = await page.$eval('#contents #inner-contents1 #timetable .wrapper table', (tableElement) => {
@@ -67,31 +72,7 @@ const getParkInfo = async (browser, parkName) => {
 
 const watchShinjuku = async (req, res) => {
   try {
-    const PARK_NAMES = [
-      '甘泉園公園',
-      '落合中央公園',
-      '西落合公園',
-    ]
-
-    const options = {}
-    // run without the sandbox if running on GCP
-    if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox'] }
-    const browser = await puppeteer.launch(options)
-    let text = ''
-    await Promise.all(PARK_NAMES.map(async (parkName) => {
-      const info = await getParkInfo(browser, parkName)
-      if (info === '') {
-        text += `${parkName}: 空いているテニスコートはありません\n`
-      } else {
-        text += `${parkName}:\n`
-        text += '\\\\n'
-        text += `${info}\n`
-        text += '\\\\n'
-      }
-    }))
-    await browser.close()
-
-    await postMsg(text)
+    await watch(PARK_NAMES, getParkInfo)
 
     res.send('Success!')
   } catch (err) {
