@@ -64,15 +64,15 @@ const getParkInfo = async (browser, parkName) => {
   await context.close()
 
   let info = ''
-  if (info1 !== '') info += `${info1}\n`
-  if (info2 !== '') info += `${info2}\n`
+  if (info1 !== '') info += `${info1}`
+  if (info2 !== '') info += `\n${info2}`
 
   return info
 }
 
 const watchShinjuku = async (req, res) => {
   try {
-    await watch(PARK_NAMES, getParkInfo)
+    await watch('新宿区', PARK_NAMES, getParkInfo)
 
     res.send('Success!')
   } catch (err) {
