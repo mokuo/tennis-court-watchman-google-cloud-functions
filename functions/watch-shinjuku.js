@@ -47,9 +47,14 @@ const getParkInfo = async (browser, parkName) => {
   const availableDateTimeObj1 = await buildAvailableDateTimeObj(page)
   const info1 = buildInfo(availableDateTimeObj1)
 
-  await clickAndWait(page, '#timetable .top-nav input[title="次月"]')
-  const availableDateTimeObj2 = await buildAvailableDateTimeObj(page)
-  const info2 = buildInfo(availableDateTimeObj2)
+  let info2 = ''
+  try {
+    await clickAndWait(page, '#timetable .top-nav input[title="次月"]')
+    const availableDateTimeObj2 = await buildAvailableDateTimeObj(page)
+    info2 = buildInfo(availableDateTimeObj2)
+  } catch (err) {
+    if (!err.message.startsWith('No node found for selector:')) throw err
+  }
 
   await context.close()
 
@@ -74,11 +79,11 @@ const watchShinjuku = async (req, res) => {
     const browser = await puppeteer.launch(options)
     let text = ''
     await Promise.all(PARK_NAMES.map(async (parkName) => {
-      text += `${parkName}\n`
       const info = await getParkInfo(browser, parkName)
       if (info === '') {
-        text += '空いているテニスコートはありません\n'
+        text += `${parkName}: 空いているテニスコートはありません\n`
       } else {
+        text += `${parkName}:\n`
         text += '\\\\n'
         text += `${info}\n`
         text += '\\\\n'
