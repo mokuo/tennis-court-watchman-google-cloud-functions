@@ -70,18 +70,14 @@ const getParkInfo = async (browser, parkName) => {
   return info
 }
 
-const watchShinjuku = async (req, res) => {
+const watchShinjuku = async () => {
   try {
     await watch('新宿区', PARK_NAMES, getParkInfo)
-
-    res.send('Success!')
   } catch (err) {
     if (err instanceof Error) {
       console.error(err) // eslint-disable-line no-console
-      res.send(`${err.name} : ${err.message}`)
     } else {
       console.error(new Error(err)) // eslint-disable-line no-console
-      res.send(err)
     }
   }
 }
