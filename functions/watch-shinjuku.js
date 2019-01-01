@@ -31,14 +31,7 @@ const buildAvailableDateTimeObj = async (page) => {
   return availableDateTimeObj
 }
 
-const collectAndPost = async (page, parkName) => {
-  const availableDateTimeObj = await buildAvailableDateTimeObj(page)
-  const info = buildInfo(availableDateTimeObj)
-  const text = (info === '') ? `${parkName} : no available time.` : `${parkName}\n\`\`\`\n${info}\`\`\``
-  postMsg(text)
-}
-
-const watchPark = async (browser, parkName) => {
+const getParkInfo = async (browser, parkName) => {
   const context = await browser.createIncognitoBrowserContext()
   const page = await context.newPage()
   await page.goto('https://yoyaku.cultos-y.jp/regasu-shinjuku/reserve/gin_menu')
@@ -51,10 +44,20 @@ const watchPark = async (browser, parkName) => {
   await clickAndWait(page, tennisSelector)
   await clickAndWait(page, '#contents #buttons-navigation input#btnOK')
   await clickAndWait(page, '#buttons-navigation ul.triple li.first a')
-  await collectAndPost(page, parkName)
+  const availableDateTimeObj1 = await buildAvailableDateTimeObj(page)
+  const info1 = buildInfo(availableDateTimeObj1)
+
   await clickAndWait(page, '#timetable .top-nav input[title="次月"]')
-  await collectAndPost(page, parkName)
+  const availableDateTimeObj2 = await buildAvailableDateTimeObj(page)
+  const info2 = buildInfo(availableDateTimeObj2)
+
   await context.close()
+
+  let info = ''
+  if (info1 !== '') info += `${info1}\n`
+  if (info2 !== '') info += `${info2}\n`
+
+  return info
 }
 
 const watchShinjuku = async (req, res) => {
@@ -69,10 +72,21 @@ const watchShinjuku = async (req, res) => {
     // run without the sandbox if running on GCP
     if (process.env.FUNCTION_NAME !== undefined) { options.args = ['--no-sandbox', '--disable-setuid-sandbox'] }
     const browser = await puppeteer.launch(options)
+    let text = ''
     await Promise.all(PARK_NAMES.map(async (parkName) => {
-      await watchPark(browser, parkName)
+      text += `${parkName}\n`
+      const info = await getParkInfo(browser, parkName)
+      if (info === '') {
+        text += '空いているテニスコートはありません\n'
+      } else {
+        text += '\\\\n'
+        text += `${info}\n`
+        text += '\\\\n'
+      }
     }))
     await browser.close()
+
+    await postMsg(text)
 
     res.send('Success!')
   } catch (err) {

@@ -19,7 +19,7 @@
     "local-call": "functions call $FUNCTION",
     "local-logs": "functions logs read",
     "local-stop": "functions stop",
-    "lint": "eslint",
+    "lint": "eslint *.js **/*.js",
     "test": "jest",
     "deploy": "gcloud beta functions deploy $FUNCTION --trigger-http"
   },
