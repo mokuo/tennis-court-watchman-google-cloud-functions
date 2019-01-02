@@ -3,7 +3,24 @@ const { clickAndWait } = require('../utils/click')
 
 const PARKS = [
   { pageNumber: 2, buttonId: 'fbox_520' }, // 富岡西公園
+  { pageNumber: 2, buttonId: 'fbox_470' }, // 新杉田公園
 ]
+
+const buildAvailableDateTimeObj = async (page) => {
+  const displayDate = page.$eval('#outline table.tbl_month td.date strong', (strongElement) => {
+    const array = strongElement.innerText.match(/\d+/g)
+    return { year: array[0], month: array[1] }
+  })
+
+  const availableDateTimeObj = await page.$$eval('#outline table#calendar tbody input', (inputElements) => {
+    const filteredInputElements = inputElements.map((inputElement) => {
+      const day = new Date(displayDate.year, displayDate.month - 1, inputElement.value).getDay()
+      return [0, 6].includes(day) // 土日
+    })
+  })
+
+  return availableDateTimeObj
+}
 
 const getParkInfo = async (browser, park) => {
   const context = await browser.createIncognitoBrowserContext()
@@ -24,7 +41,7 @@ const getParkInfo = async (browser, park) => {
   await clickAndWait(page, `#outline button#${park.buttonId}`)
   await clickAndWait(page, '#outline button#fbox_00')
 
-  await page.screenshot({ path: './test-end.png' })
+  const availableDateTimeObj = await buildAvailableDateTimeObj(page)
 
   await context.close()
 }
@@ -33,7 +50,7 @@ const watchYokohama = async () => {
   try {
     // await watch()
     const browser = await puppeteer.launch()
-    await getParkInfo(browser, PARKS[0])
+    await getParkInfo(browser, PARKS[1])
   } catch (err) {
     if (err instanceof Error) {
       console.error(err) // eslint-disable-line no-console
