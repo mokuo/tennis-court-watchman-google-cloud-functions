@@ -41,5 +41,5 @@ gcloud pubsub topics publish watch-tennis-court --message "test"
 ### Cloud Scheduler
 
 ```bash
-gcloud beta scheduler jobs create pubsub watch --schedule "0 21 * * *" --topic watch-tennis-court --message-body "Watch"
+gcloud beta scheduler jobs create pubsub watch --schedule "0 21 * * *" --time-zone "Asia/Tokyo" --topic watch-tennis-court --message-body "Watch"
 ```
