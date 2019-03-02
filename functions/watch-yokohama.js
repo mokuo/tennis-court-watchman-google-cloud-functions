@@ -1,3 +1,5 @@
+/* eslint no-await-in-loop: "off" */
+
 const puppeteer = require('puppeteer')
 const { clickAndWait } = require('../utils/click')
 
@@ -59,17 +61,18 @@ const getParkInfo = async (browser, park) => {
   await gotoCalendarPage(page, park)
   const filteredDayList = await buildFilteredDayList(page)
   console.log('aaa!!!')
-  console.log(filteredDayList)
+  console.log(filteredDayList);
   // const availableDateTimeObj = {}
-  await Promise.all(filteredDayList.map(async (filteredDay) => {
-    // gotoCalendarPage, inputId を使って各ページから availableDateTimeObj を生成する
-    const newPage = await context.newPage()
-    await gotoCalendarPage(newPage, park)
-    await clickAndWait(page, `#calendar input#${filteredDay.inputId}`)
-    const availableTimeList = await buildAvailableTimeList(newPage)
-    console.log('bbb!!!')
-    console.log(availableTimeList)
-  }))
+  (async () => {
+    for (let i = 0; i < filteredDayList; i += 1) {
+      const newPage = await context.newPage()
+      await gotoCalendarPage(newPage, park)
+      await clickAndWait(page, `#calendar input#${filteredDayList[i].inputId}`)
+      const availableTimeList = await buildAvailableTimeList(newPage)
+      console.log('bbb!!!')
+      console.log(availableTimeList)
+    }
+  })()
 
   await context.close()
 }
